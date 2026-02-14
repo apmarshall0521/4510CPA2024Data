@@ -1,0 +1,27 @@
+[
+    {
+        "className": "Data Analytics",
+        "averageRating": 4.4,
+        "studentCount": 10
+    },
+    {
+        "className": "Tax Research",
+        "averageRating": 4.1,
+        "studentCount": 10
+    },
+    {
+        "className": "Business Law",
+        "averageRating": 4.0,
+        "studentCount": 10
+    },
+    {
+        "className": "Advanced Audit",
+        "averageRating": 3.8,
+        "studentCount": 10
+    },
+    {
+        "className": "Financial Reporting",
+        "averageRating": 3.5,
+        "studentCount": 10
+    }
+]
