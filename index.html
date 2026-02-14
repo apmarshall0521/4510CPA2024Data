@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAcc Program Exit Survey Analysis 2024</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .insights {
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        .insights p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MAcc Program Exit Survey Analysis 2024</h1>
+
+    <div class="insights" id="keyInsights">
+        <h3>Key Insights</h3>
+        <!-- Insights will be populated here -->
+    </div>
+
+    <h2>Class Rankings (Most Beneficial)</h2>
+    <canvas id="ratingsChart"></canvas>
+
+    <h2>Detailed Data</h2>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Average Rating</th>
+                <th>Student Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be populated here -->
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Analysis based on Grad Program Exit Survey Data 2024</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Sort data by averageRating descending to ensure correct ranking
+                data.sort((a, b) => b.averageRating - a.averageRating);
+
+                // Populate Table
+                const tableBody = document.querySelector('#dataTable tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.className}</td>
+                        <td>${item.averageRating.toFixed(2)}</td>
+                        <td>${item.studentCount}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Prepare Chart Data
+                const labels = data.map(item => item.className);
+                const ratings = data.map(item => item.averageRating);
+
+                // Create Chart
+                const ctx = document.getElementById('ratingsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Average Benefit Rating',
+                            data: ratings,
+                            backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Horizontal bar chart
+                        responsive: true,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 5
+                            }
+                        }
+                    }
+                });
+
+                // Populate Key Insights
+                const topClass = data[0]; // Assuming sorted
+                const insightsDiv = document.getElementById('keyInsights');
+                insightsDiv.innerHTML += `
+                    <p><strong>Top Rated Class:</strong> ${topClass.className} with an average rating of ${topClass.averageRating.toFixed(2)}.</p>
+                    <p><em>Note: Trend data is not available for this period to identify the "Most Improved" area.</em></p>
+                `;
+            })
+            .catch(error => console.error('Error loading data:', error));
+    });
+</script>
+
+</body>
+</html>
